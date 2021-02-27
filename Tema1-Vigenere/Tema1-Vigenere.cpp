@@ -1,0 +1,192 @@
+#include <iostream>
+#include <fstream>
+#include <string>
+#include <algorithm>
+#include <vector>
+#include<time.h>
+#include <Windows.h>
+#define IC_EN 0.065
+using namespace std;
+ifstream fin;
+inline long long PerformanceCounter() noexcept
+{
+	LARGE_INTEGER li;
+	::QueryPerformanceCounter(&li);
+	return li.QuadPart;
+}
+inline long long PerformanceFrequency() noexcept
+{
+	LARGE_INTEGER li;
+	::QueryPerformanceFrequency(&li);
+	return li.QuadPart;
+}
+void addLowercaseLetters(string & plaintext) 
+{
+	char letter;
+	fin >> letter;
+	letter = tolower(letter);
+	if (letter>='a' && letter<='z')
+		plaintext.push_back(letter);
+}
+void fromLettersToNumbers(string &text,vector<unsigned int>&numbers)
+{
+	for (int i = 0; i < text.length(); i++)
+		numbers.push_back(text[i] - 'a');
+}
+void fromNumbersToLetters(string& text, vector<unsigned int>& numbers)
+{
+	char c;
+	for (int i = 0; i < numbers.size(); i++)
+	{
+		c =char(numbers[i] + 'a');
+		text.push_back(c);
+	}
+		
+}
+void printKey(string &key)
+{
+	cout << "Length of the key is " << key.length() << ": ";
+	for (int i = 0; i < key.length(); i++)
+		cout << key[i];
+	cout << '\n';
+
+}
+void printTransformedKey(int length,vector<unsigned int> &transformedKey)
+{
+	for (int i = 0; i < length; i++)
+		cout << transformedKey[i] << ' ';
+	cout << '\n';
+
+}
+void printText(string& ciphertext)
+{
+	for (int i = 0; i < ciphertext.length(); i++)
+		cout << ciphertext[i];
+	cout << '\n';
+}
+int main()
+{
+	long long start, finish;
+	long long frequency = PerformanceFrequency();
+	start = PerformanceCounter();
+	string plaintext;
+	//Remove all numbers, symbols and spaces from the plaintext
+	fin.open("input.txt");
+	addLowercaseLetters(plaintext); //Transforms input into a string that contains only lowercase letters and stores it in 'plaintext' string
+	while (!fin.eof())	addLowercaseLetters(plaintext);
+	cout << "Text has " << plaintext.length() << " characters." << endl;
+
+	//Transform each letter into a number
+	vector <unsigned int> transformedPlaintext;
+	fromLettersToNumbers(plaintext, transformedPlaintext); //Transforms the text from letters to numbers and stores it in 'transformedPlaintext' vector
+
+	//Generate randomly the key's length
+	unsigned int keyLength;
+	srand(time(NULL));
+	keyLength = rand() % (transformedPlaintext.size()/2);
+
+	//Generate randomly the key
+	vector<unsigned int> transformedKey;
+	unsigned int letter;
+	for (int i = 0; i < keyLength; i++)
+	{
+		letter = rand() % 26;
+		transformedKey.push_back(letter);
+	}
+
+	cout << "Length of the key is " << transformedKey.size()<<endl;
+
+	//Encrypt plaintext
+	string ciphertext;
+	for (int i = 0; i < transformedPlaintext.size(); i++)
+	{
+		char c = (transformedPlaintext[i] + transformedKey[i % keyLength]) % 26 + 'a';
+		ciphertext.push_back(c);
+	}
+
+	vector<unsigned int>transformedCiphertext;
+	fromLettersToNumbers(ciphertext, transformedCiphertext);
+	cout << "Text encrypted with key:" << endl;
+	printText(ciphertext);
+
+	//Decrypt plaintext with key
+	int k, c, m; // (m+k) mod 26 = c
+	plaintext.clear();
+	transformedPlaintext.clear();
+	for (int i = 0; i < ciphertext.length(); i++)
+	{
+		k = transformedKey[i % keyLength];
+		c = transformedCiphertext[i];
+		if (c < k) //if the letter of the ciphertext is smaller than the correspondent letter of the key => m+k is grater than 26
+			m = 26 + c - k;
+		else //otherwise, m+k is less than 26
+			m = c - k;
+		transformedPlaintext.push_back(m);
+	}
+	fromNumbersToLetters(plaintext, transformedPlaintext);
+	cout << "Text decrypted with key:" << endl;
+	printText(plaintext);
+	
+	//Find the length of the key
+	plaintext.clear();
+	transformedPlaintext.clear();
+	transformedKey.clear();
+	keyLength = 0;
+	
+	//compute the index of coincidence for each substring
+	keyLength = 2; //first we suppose the key has length 2
+	vector<double> IC; //here we will store the index of coincidence for each substring
+	unsigned int fi; //number of apparitions of each character
+	unsigned int alpha; //substring length
+	double x;
+	double Min = 100000;
+	int supposedKeyLength = 0;
+	vector<unsigned int>letterFrequency;
+
+	while (keyLength<=ciphertext.size()/2)
+	{
+		IC.clear();
+		for (int i = 0; i < keyLength; i++) //position of first letter of each substring
+		{
+			double sum = 0;
+			letterFrequency.clear();
+			letterFrequency.resize(26, 0);
+			alpha = 0;
+			for (int j = i; j < ciphertext.length(); j += keyLength) //search for the frequency of each letter in the entire substring
+			{
+				alpha++; 
+				letterFrequency[transformedCiphertext[j]]++; //Increase the frequency of each letter
+			}
+			//calculate the index of coincidence of the current substring
+			for (int j = 0; j < 26; j++)
+			{
+				fi = letterFrequency[j];
+				sum = sum + (double)((double)fi / alpha) * ((double)(fi - 1) / (alpha - 1));
+			}
+
+			IC.push_back(sum);
+
+		}
+
+		double ma = 0;
+		for (int i = 0; i < IC.size(); i++)
+			ma += IC[i];
+
+		ma /= IC.size();
+		if (abs(IC_EN-ma) < Min)
+		{
+			Min =abs(IC_EN-ma);
+			supposedKeyLength = keyLength;
+		}
+		keyLength++;	
+
+	}
+
+	cout << "The key length found is "<<supposedKeyLength<<endl;
+	finish = PerformanceCounter();
+	double elapsedseconds = (double)(finish - start) / frequency;
+	cout << "Execution time: " << elapsedseconds<<"s";
+
+
+}
+

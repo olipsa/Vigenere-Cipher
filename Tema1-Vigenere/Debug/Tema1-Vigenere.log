@@ -1,0 +1,14 @@
+﻿  Tema1-Vigenere.cpp
+E:\LAPTOP FILES\Documents\Facultate\An2Sem2\Introducere in criptografie\Tema1-Vigenere\Tema1-Vigenere\Tema1-Vigenere.cpp(33,20): warning C4018: '<': signed/unsigned mismatch
+E:\LAPTOP FILES\Documents\Facultate\An2Sem2\Introducere in criptografie\Tema1-Vigenere\Tema1-Vigenere\Tema1-Vigenere.cpp(39,20): warning C4018: '<': signed/unsigned mismatch
+E:\LAPTOP FILES\Documents\Facultate\An2Sem2\Introducere in criptografie\Tema1-Vigenere\Tema1-Vigenere\Tema1-Vigenere.cpp(49,20): warning C4018: '<': signed/unsigned mismatch
+E:\LAPTOP FILES\Documents\Facultate\An2Sem2\Introducere in criptografie\Tema1-Vigenere\Tema1-Vigenere\Tema1-Vigenere.cpp(63,20): warning C4018: '<': signed/unsigned mismatch
+E:\LAPTOP FILES\Documents\Facultate\An2Sem2\Introducere in criptografie\Tema1-Vigenere\Tema1-Vigenere\Tema1-Vigenere.cpp(85,12): warning C4244: 'argument': conversion from 'time_t' to 'unsigned int', possible loss of data
+E:\LAPTOP FILES\Documents\Facultate\An2Sem2\Introducere in criptografie\Tema1-Vigenere\Tema1-Vigenere\Tema1-Vigenere.cpp(91,20): warning C4018: '<': signed/unsigned mismatch
+E:\LAPTOP FILES\Documents\Facultate\An2Sem2\Introducere in criptografie\Tema1-Vigenere\Tema1-Vigenere\Tema1-Vigenere.cpp(101,20): warning C4018: '<': signed/unsigned mismatch
+E:\LAPTOP FILES\Documents\Facultate\An2Sem2\Introducere in criptografie\Tema1-Vigenere\Tema1-Vigenere\Tema1-Vigenere.cpp(116,20): warning C4018: '<': signed/unsigned mismatch
+E:\LAPTOP FILES\Documents\Facultate\An2Sem2\Introducere in criptografie\Tema1-Vigenere\Tema1-Vigenere\Tema1-Vigenere.cpp(149,21): warning C4018: '<': signed/unsigned mismatch
+E:\LAPTOP FILES\Documents\Facultate\An2Sem2\Introducere in criptografie\Tema1-Vigenere\Tema1-Vigenere\Tema1-Vigenere.cpp(155,22): warning C4018: '<': signed/unsigned mismatch
+E:\LAPTOP FILES\Documents\Facultate\An2Sem2\Introducere in criptografie\Tema1-Vigenere\Tema1-Vigenere\Tema1-Vigenere.cpp(172,21): warning C4018: '<': signed/unsigned mismatch
+E:\LAPTOP FILES\Documents\Facultate\An2Sem2\Introducere in criptografie\Tema1-Vigenere\Tema1-Vigenere\Tema1-Vigenere.cpp(141,9): warning C4101: 'x': unreferenced local variable
+  Tema1-Vigenere.vcxproj -> E:\LAPTOP FILES\Documents\Facultate\An2Sem2\Introducere in criptografie\Tema1-Vigenere\Debug\Tema1-Vigenere.exe
