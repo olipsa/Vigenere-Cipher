@@ -191,6 +191,46 @@ int main()
 	}
 
 	cout << "The key length found is " << supposedKeyLength << endl;
+
+	//find the key knowing it's length
+	int s,kj;
+	double MIC=0;
+	vector<double>probabilities = { 8.4966,2.0720,4.5388,3.3844,11.1607,1.8121,2.4705,3.0034,7.5448,0.1965,1.1016,5.4893,3.0129,6.6544,7.1635,3.1671,0.1962,7.5809,5.7351,6.9509,3.6308,1.0074,1.2899,0.2902,1.7779,0.2722 };
+	for (int i = 0; i < keyLength; i++)
+	{
+		s = -1;
+		MIC = 0;
+		while (abs(IC_EN-MIC)>0.01)
+		{
+			s++;
+			//compute the MIC
+			MIC = 0;
+			letterFrequency.clear();
+			letterFrequency.resize(26, 0);
+			alpha = 0;
+			for (int j = i; j < ciphertext.length(); j += keyLength)
+			{
+				alpha++;
+				letterFrequency[(transformedCiphertext[j] + s)%26]++;
+
+			}
+
+			for (int i = 0; i < 26; i++)
+				MIC = MIC + (double)(probabilities[i]/100 * (double)letterFrequency[i] / alpha);
+			
+		}
+		kj = (26 - s) % 26;
+		transformedKey.push_back(kj);
+
+	}
+	
+	fromNumbersToLetters(key, transformedKey);
+	cout << "Key found:";
+	printText(key);
+
+
+
+
 	finish = PerformanceCounter();
 	double elapsedseconds = (double)(finish - start) / frequency;
 	cout << "Execution time: " << elapsedseconds << "s";
