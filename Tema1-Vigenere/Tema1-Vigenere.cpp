@@ -20,15 +20,15 @@ inline long long PerformanceFrequency() noexcept
 	::QueryPerformanceFrequency(&li);
 	return li.QuadPart;
 }
-void addLowercaseLetters(string & plaintext) 
+void addLowercaseLetters(string& plaintext)
 {
 	char letter;
 	fin >> letter;
 	letter = tolower(letter);
-	if (letter>='a' && letter<='z')
+	if (letter >= 'a' && letter <= 'z')
 		plaintext.push_back(letter);
 }
-void fromLettersToNumbers(string &text,vector<unsigned int>&numbers)
+void fromLettersToNumbers(string& text, vector<unsigned int>& numbers)
 {
 	for (int i = 0; i < text.length(); i++)
 		numbers.push_back(text[i] - 'a');
@@ -38,12 +38,12 @@ void fromNumbersToLetters(string& text, vector<unsigned int>& numbers)
 	char c;
 	for (int i = 0; i < numbers.size(); i++)
 	{
-		c =char(numbers[i] + 'a');
+		c = char(numbers[i] + 'a');
 		text.push_back(c);
 	}
-		
+
 }
-void printKey(string &key)
+void printKey(string& key)
 {
 	cout << "Length of the key is " << key.length() << ": ";
 	for (int i = 0; i < key.length(); i++)
@@ -51,7 +51,7 @@ void printKey(string &key)
 	cout << '\n';
 
 }
-void printTransformedKey(int length,vector<unsigned int> &transformedKey)
+void printTransformedKey(int length, vector<unsigned int>& transformedKey)
 {
 	for (int i = 0; i < length; i++)
 		cout << transformedKey[i] << ' ';
@@ -83,7 +83,7 @@ int main()
 	//Generate randomly the key's length
 	unsigned int keyLength;
 	srand(time(NULL));
-	keyLength = rand() % (transformedPlaintext.size()/2);
+	keyLength = rand() % 26+1;
 
 	//Generate randomly the key
 	vector<unsigned int> transformedKey;
@@ -94,7 +94,9 @@ int main()
 		transformedKey.push_back(letter);
 	}
 
-	cout << "Length of the key is " << transformedKey.size()<<endl;
+	string key;
+	fromNumbersToLetters(key, transformedKey);
+	printKey(key);
 
 	//Encrypt plaintext
 	string ciphertext;
@@ -108,11 +110,13 @@ int main()
 	fromLettersToNumbers(ciphertext, transformedCiphertext);
 	cout << "Text encrypted with key:" << endl;
 	printText(ciphertext);
+	cout << endl;
 
 	//Decrypt plaintext with key
 	int k, c, m; // (m+k) mod 26 = c
 	plaintext.clear();
 	transformedPlaintext.clear();
+	cout << "Plaintext deleted." << endl;
 	for (int i = 0; i < ciphertext.length(); i++)
 	{
 		k = transformedKey[i % keyLength];
@@ -126,24 +130,24 @@ int main()
 	fromNumbersToLetters(plaintext, transformedPlaintext);
 	cout << "Text decrypted with key:" << endl;
 	printText(plaintext);
-	
+
 	//Find the length of the key
 	plaintext.clear();
 	transformedPlaintext.clear();
+	key.clear();
 	transformedKey.clear();
 	keyLength = 0;
-	
+	cout << "\n\nPlaintext deleted.\nKey deleted\n";
+
 	//compute the index of coincidence for each substring
 	keyLength = 2; //first we suppose the key has length 2
 	vector<double> IC; //here we will store the index of coincidence for each substring
 	unsigned int fi; //number of apparitions of each character
 	unsigned int alpha; //substring length
-	double x;
-	double Min = 100000;
 	int supposedKeyLength = 0;
 	vector<unsigned int>letterFrequency;
 
-	while (keyLength<=ciphertext.size()/2)
+	while (keyLength <= 26 )
 	{
 		IC.clear();
 		for (int i = 0; i < keyLength; i++) //position of first letter of each substring
@@ -154,7 +158,7 @@ int main()
 			alpha = 0;
 			for (int j = i; j < ciphertext.length(); j += keyLength) //search for the frequency of each letter in the entire substring
 			{
-				alpha++; 
+				alpha++;
 				letterFrequency[transformedCiphertext[j]]++; //Increase the frequency of each letter
 			}
 			//calculate the index of coincidence of the current substring
@@ -173,20 +177,23 @@ int main()
 			ma += IC[i];
 
 		ma /= IC.size();
-		if (abs(IC_EN-ma) < Min)
+		if (abs(IC_EN - ma) < 0.01)
 		{
-			Min =abs(IC_EN-ma);
 			supposedKeyLength = keyLength;
+			/*cout << "The key could be " << supposedKeyLength <<" with an ma of "<<ma<< " and with an IC of:" << endl;
+			for (int i = 0; i < IC.size(); i++)
+				cout << IC[i] << ' ';
+			cout << endl;*/
+			break;
 		}
-		keyLength++;	
+		keyLength++;
 
 	}
 
-	cout << "The key length found is "<<supposedKeyLength<<endl;
+	cout << "The key length found is " << supposedKeyLength << endl;
 	finish = PerformanceCounter();
 	double elapsedseconds = (double)(finish - start) / frequency;
-	cout << "Execution time: " << elapsedseconds<<"s";
+	cout << "Execution time: " << elapsedseconds << "s";
 
 
 }
-
